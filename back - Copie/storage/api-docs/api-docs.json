@@ -1,0 +1,1894 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API DoReMi - Plateforme scolaire numérique",
+        "description": "Bienvenue dans la documentation de l'API **DoReMi**, une plateforme complète de gestion scolaire hybride.\\n\\n\n        ## Modules couverts :\\n\n        - Gestion des écoles et utilisateurs (élèves, enseignants, parents)\\n\n        - Cours en ligne et en présentiel\\n\n        - Suivi des notes et bulletins\\n\n        - Gestion des documents et devoirs\\n\n        - Actualités, emploi du temps, messagerie\\n\n        - Gestion des stages : demandes & offres\\n\\n\n        Cette documentation est à jour pour l'environnement de développement.",
+        "termsOfService": "https://doremi-app.test/conditions",
+        "contact": {
+            "name": "Support Technique DoReMi",
+            "email": "support@doremi-app.test"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Serveur local de développement"
+        }
+    ],
+    "paths": {
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Liste des utilisateurs avec leurs rôles",
+                "operationId": "9d1fa317c89f43d029de5fbe8e9671ab",
+                "responses": {
+                    "200": {
+                        "description": "Liste des utilisateurs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Inscription d'un utilisateur",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "surname",
+                                    "email",
+                                    "password",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Dupont"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Jean"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "jean@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "admin",
+                                            "teacher",
+                                            "student",
+                                            "user"
+                                        ],
+                                        "example": "user"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur inscrit",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLC..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Connexion de l'utilisateur",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "jean@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOi..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Identifiants invalides"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Déconnexion de l'utilisateur",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Déconnexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Déconnexion réussie"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Infos de l'utilisateur connecté",
+                "operationId": "7c1cf647d76fad4b3eb1549fa4fe2f4c",
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur connecté",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/courses/{courseId}/chapters": {
+            "get": {
+                "tags": [
+                    "Chapitres"
+                ],
+                "summary": "Lister les chapitres d'un cours",
+                "operationId": "461c328bacb88e203a2d58d73fa2fe20",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des chapitres"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Chapitres"
+                ],
+                "summary": "Créer un nouveau chapitre pour un cours",
+                "operationId": "8d31c457dc1f471623d2ee56db67346b",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Chapitre 1 : Introduction"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Contenu du chapitre..."
+                                    },
+                                    "video_url": {
+                                        "type": "string",
+                                        "example": "https://youtube.com/..."
+                                    },
+                                    "pdf_path": {
+                                        "type": "string",
+                                        "example": "/storage/chapters/intro.pdf"
+                                    },
+                                    "audio_path": {
+                                        "type": "string",
+                                        "example": "/storage/chapters/intro.mp3"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Chapitre créé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/courses/{courseId}/chapters/{chapterId}": {
+            "get": {
+                "tags": [
+                    "Chapitres"
+                ],
+                "summary": "Afficher un chapitre spécifique",
+                "operationId": "acc9de748347b2795ba5e52bd47dcab5",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chapterId",
+                        "in": "path",
+                        "description": "ID du chapitre",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du chapitre"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Chapitres"
+                ],
+                "summary": "Mettre à jour un chapitre",
+                "operationId": "a35831c2ceceb60a91537b1a62b1c8db",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chapterId",
+                        "in": "path",
+                        "description": "ID du chapitre à mettre à jour",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Chapitre mis à jour"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Nouveau contenu du chapitre"
+                                    },
+                                    "video_url": {
+                                        "type": "string",
+                                        "example": "https://youtube.com/..."
+                                    },
+                                    "pdf_path": {
+                                        "type": "string",
+                                        "example": "/storage/chapters/intro.pdf"
+                                    },
+                                    "audio_path": {
+                                        "type": "string",
+                                        "example": "/storage/chapters/intro.mp3"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Chapitre mis à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Chapitres"
+                ],
+                "summary": "Supprimer un chapitre",
+                "operationId": "2386631dc7e097a5a2019c60d2c56af7",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chapterId",
+                        "in": "path",
+                        "description": "ID du chapitre à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chapitre supprimé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/students/{studentId}/conversations": {
+            "get": {
+                "tags": [
+                    "Conversations"
+                ],
+                "summary": "Lister les conversations d'un élève",
+                "operationId": "15842760ebc59f06ef71ea2e4d05aab5",
+                "parameters": [
+                    {
+                        "name": "studentId",
+                        "in": "path",
+                        "description": "ID de l'élève",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des conversations de l'élève"
+                    }
+                }
+            }
+        },
+        "/api/conversations": {
+            "post": {
+                "tags": [
+                    "Conversations"
+                ],
+                "summary": "Créer une nouvelle conversation",
+                "operationId": "6667333bc05e27c2c891e73371ca41cd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "subject",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Demande de réinscription"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Bonjour, je souhaite me réinscrire pour l'année prochaine."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Conversation créée avec succès"
+                    }
+                }
+            }
+        },
+        "/api/courses": {
+            "get": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Lister les cours avec filtres optionnels",
+                "operationId": "02eeda67042dba2d22a517f26fb8eaf1",
+                "parameters": [
+                    {
+                        "name": "theme",
+                        "in": "query",
+                        "description": "Filtrer par thème",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Filtrer par niveau",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "school",
+                        "in": "query",
+                        "description": "Filtrer par école",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des cours filtrés"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Créer un nouveau cours",
+                "operationId": "a4d6b7e7be59571034428ffbb86aaf0a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "theme",
+                                    "level",
+                                    "school"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mathématiques 101"
+                                    },
+                                    "theme": {
+                                        "type": "string",
+                                        "example": "Mathématiques"
+                                    },
+                                    "level": {
+                                        "type": "string",
+                                        "example": "Licence"
+                                    },
+                                    "school": {
+                                        "type": "string",
+                                        "example": "Université DoReMi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cours créé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/courses/{id}": {
+            "get": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Afficher un cours avec ses chapitres",
+                "operationId": "f170bd35e3106c9d9bf5807499c80b68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du cours avec chapitres"
+                    },
+                    "404": {
+                        "description": "Cours non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Mettre à jour un cours",
+                "operationId": "4d00e54a4b57b3259c40894ad2d0c76b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du cours à mettre à jour",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Physique 101"
+                                    },
+                                    "theme": {
+                                        "type": "string",
+                                        "example": "Physique"
+                                    },
+                                    "level": {
+                                        "type": "string",
+                                        "example": "Licence"
+                                    },
+                                    "school": {
+                                        "type": "string",
+                                        "example": "Université DoReMi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cours mis à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Supprimer un cours",
+                "operationId": "3a2888333ed2868b6102094f5348520e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du cours à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cours supprimé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/documents": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Lister les documents avec filtres optionnels",
+                "operationId": "479e53af7d4820aecb8f9534fdbe21aa",
+                "parameters": [
+                    {
+                        "name": "theme",
+                        "in": "query",
+                        "description": "Filtrer par thème",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "school",
+                        "in": "query",
+                        "description": "Filtrer par école",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des documents filtrés"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Créer un nouveau document",
+                "operationId": "9b247d60e8834d470666fba8e773edb4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "theme",
+                                    "school",
+                                    "file_path"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Plan de cours Mathématiques"
+                                    },
+                                    "theme": {
+                                        "type": "string",
+                                        "example": "Mathématiques"
+                                    },
+                                    "school": {
+                                        "type": "string",
+                                        "example": "Lycée DoReMi"
+                                    },
+                                    "file_path": {
+                                        "type": "string",
+                                        "example": "/storage/documents/plan_cours_math.pdf"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Document créé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/documents/{id}": {
+            "delete": {
+                "tags": [
+                    "Documents"
+                ],
+                "summary": "Supprimer un document",
+                "operationId": "889c107c27dc6b118dee932d1760f574",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du document à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Document non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/internships": {
+            "get": {
+                "tags": [
+                    "Stages"
+                ],
+                "summary": "Lister tous les stages",
+                "operationId": "e74ba8f8c38595f4ef3ae05c4cbe1390",
+                "responses": {
+                    "200": {
+                        "description": "Liste des stages"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Stages"
+                ],
+                "summary": "Créer un nouveau stage",
+                "operationId": "2a7b395aba72f9bf95f5530b3318e6d8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "company",
+                                    "description",
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Stage Développement Web"
+                                    },
+                                    "company": {
+                                        "type": "string",
+                                        "example": "Société Tech"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Stage pour développement d'applications web."
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-09-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-12-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Stage créé avec succès"
+                    }
+                }
+            }
+        },
+        "/api/internships/{id}": {
+            "get": {
+                "tags": [
+                    "Stages"
+                ],
+                "summary": "Afficher un stage spécifique",
+                "operationId": "34ebc6dd4c3fe8e33b4a77233dcf1324",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du stage",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du stage"
+                    },
+                    "404": {
+                        "description": "Stage non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Stages"
+                ],
+                "summary": "Mettre à jour un stage",
+                "operationId": "dc03c095549bafd1e28057eb53b4a974",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du stage à mettre à jour",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Stage Dev Web mis à jour"
+                                    },
+                                    "company": {
+                                        "type": "string",
+                                        "example": "Nouvelle Société"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description mise à jour."
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-09-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-12-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Stage mis à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Stages"
+                ],
+                "summary": "Supprimer un stage",
+                "operationId": "1ce8a406e4c5fdcce2956d6e4213e790",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du stage à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stage supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Stage non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/users/{userId}/internship-requests": {
+            "get": {
+                "tags": [
+                    "Demandes de stage"
+                ],
+                "summary": "Lister les demandes de stage d'un utilisateur",
+                "operationId": "7fa3a89f96f2dd21f3b17849772985ea",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des demandes de stage"
+                    }
+                }
+            }
+        },
+        "/api/internship-requests": {
+            "post": {
+                "tags": [
+                    "Demandes de stage"
+                ],
+                "summary": "Créer une nouvelle demande de stage",
+                "operationId": "8c7ec6828cdb2577786d2d562bdbaf72",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "internship_id",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "internship_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "pending"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Demande de stage créée avec succès"
+                    }
+                }
+            }
+        },
+        "/api/internship-requests/{id}": {
+            "put": {
+                "tags": [
+                    "Demandes de stage"
+                ],
+                "summary": "Mettre à jour une demande de stage",
+                "operationId": "57324e4a82fa8720091da0787195b784",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la demande de stage",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "approved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Demande de stage mise à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Demandes de stage"
+                ],
+                "summary": "Supprimer une demande de stage",
+                "operationId": "090b1b64a1a0e35c09670e17a9f3439b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la demande de stage à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Demande de stage supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "Demande de stage non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/conversations/{conversationId}/messages": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Récupérer les messages d'une conversation",
+                "operationId": "b889d04eb0e02f70516349d8a3f11e91",
+                "parameters": [
+                    {
+                        "name": "conversationId",
+                        "in": "path",
+                        "description": "ID de la conversation",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des messages",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Message"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/messages": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Envoyer un message dans une conversation",
+                "operationId": "db79bb7bcadfdb708e9f6c38ac928f4a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "conversation_id",
+                                    "sender_id",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "conversation_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Bonjour, j’ai une question."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message envoyé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/news": {
+            "get": {
+                "tags": [
+                    "Actualités"
+                ],
+                "summary": "Lister toutes les actualités",
+                "operationId": "9bfe744cf19dcb58e9ab9677c29ee6c7",
+                "responses": {
+                    "200": {
+                        "description": "Liste des actualités"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Actualités"
+                ],
+                "summary": "Créer une nouvelle actualité",
+                "operationId": "1c0fdf6cc53f1508a87121ef9111be5b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Nouvelle rentrée"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "La rentrée scolaire commence le 15 septembre."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Actualité créée avec succès"
+                    }
+                }
+            }
+        },
+        "/api/news/{id}": {
+            "get": {
+                "tags": [
+                    "Actualités"
+                ],
+                "summary": "Afficher une actualité spécifique",
+                "operationId": "235a202c862ec6888f4129413c1f2bcd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'actualité",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'actualité"
+                    },
+                    "404": {
+                        "description": "Actualité non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Actualités"
+                ],
+                "summary": "Mettre à jour une actualité",
+                "operationId": "11a73338ef61a1ffd2ab3771639f638e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'actualité à mettre à jour",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Titre mis à jour"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Contenu mis à jour de l’actualité."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualité mise à jour avec succès"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Actualités"
+                ],
+                "summary": "Supprimer une actualité",
+                "operationId": "cd3235328b3ea2080e4d0a47986d4714",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'actualité à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Actualité supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "Actualité non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/users/{userId}/courses/{courseId}/progression": {
+            "get": {
+                "tags": [
+                    "Progressions"
+                ],
+                "summary": "Voir la progression d'un utilisateur dans un cours",
+                "operationId": "97464b7e1c729fff063853817f2e3af9",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progression de l'utilisateur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Progression"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Progressions"
+                ],
+                "summary": "Mettre à jour la progression d'un utilisateur",
+                "operationId": "7c5d604fa979ba47f387ed3fe8bd988f",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID du cours",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "percentage": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 85
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Progression mise à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Progression"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/progressions": {
+            "post": {
+                "tags": [
+                    "Progressions"
+                ],
+                "summary": "Créer une progression pour un utilisateur",
+                "operationId": "884463feab623a431f8e7f428a67b0ab",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "course_id",
+                                    "percentage"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "course_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "percentage": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 35.5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Progression créée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Progression"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/schools": {
+            "get": {
+                "tags": [
+                    "Écoles"
+                ],
+                "summary": "Liste de toutes les écoles",
+                "operationId": "07ad67f69ed66c98e40f8ffec7133839",
+                "responses": {
+                    "200": {
+                        "description": "Liste des écoles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/School"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Écoles"
+                ],
+                "summary": "Créer une nouvelle école",
+                "operationId": "336a9bbcd1602de15a0dd949ba56a5da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "address"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "École Sainte Marie"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Dakar, Sénégal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "École créée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/School"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/schools/{id}": {
+            "get": {
+                "tags": [
+                    "Écoles"
+                ],
+                "summary": "Afficher une école spécifique",
+                "operationId": "94580837ff0f0408d6402c978596403e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'école",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'école",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/School"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Écoles"
+                ],
+                "summary": "Mettre à jour une école",
+                "operationId": "326ad6c8d3fe5be896777ed31ef44f5b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'école",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "École Saint Michel"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Thiès, Sénégal"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "École mise à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/School"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Écoles"
+                ],
+                "summary": "Supprimer une école",
+                "operationId": "d03c7da4bbfcc8394a4b3882c496b8e2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'école",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "École supprimée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "School deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "title": "Utilisateur",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jean Dupont"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "jean@example.com"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "role": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Progression": {
+                "title": "Progression",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "course_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "progress": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 65.5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-31T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-31T12:15:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "School": {
+                "title": "School",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Lycée Blaise Diagne"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Dakar, Sénégal"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-30T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-30T10:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Message": {
+                "title": "Message",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sender_id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "receiver_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Bonjour, comment ça va ?"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentification",
+            "description": "Authentification"
+        },
+        {
+            "name": "Chapitres",
+            "description": "Chapitres"
+        },
+        {
+            "name": "Conversations",
+            "description": "Conversations"
+        },
+        {
+            "name": "Cours",
+            "description": "Cours"
+        },
+        {
+            "name": "Documents",
+            "description": "Documents"
+        },
+        {
+            "name": "Stages",
+            "description": "Stages"
+        },
+        {
+            "name": "Demandes de stage",
+            "description": "Demandes de stage"
+        },
+        {
+            "name": "Messages",
+            "description": "Messages"
+        },
+        {
+            "name": "Actualités",
+            "description": "Actualités"
+        },
+        {
+            "name": "Progressions",
+            "description": "Progressions"
+        },
+        {
+            "name": "Écoles",
+            "description": "Écoles"
+        }
+    ]
+}
