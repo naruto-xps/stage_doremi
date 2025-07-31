@@ -21,86 +21,26 @@
         }
     ],
     "paths": {
-        "/api/users": {
-            "get": {
-                "tags": [
-                    "Authentification"
-                ],
-                "summary": "Liste des utilisateurs avec leurs rôles",
-                "operationId": "9d1fa317c89f43d029de5fbe8e9671ab",
-                "responses": {
-                    "200": {
-                        "description": "Liste des utilisateurs",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/User"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/register": {
             "post": {
                 "tags": [
                     "Authentification"
                 ],
-                "summary": "Inscription d'un utilisateur",
+                "summary": "Inscription d’un utilisateur",
                 "operationId": "8a56853624e025573120a09a4c75d468",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "surname",
-                                    "email",
-                                    "password",
-                                    "role"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Dupont"
-                                    },
-                                    "surname": {
-                                        "type": "string",
-                                        "example": "Jean"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "jean@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "secret123"
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "enum": [
-                                            "admin",
-                                            "teacher",
-                                            "student",
-                                            "user"
-                                        ],
-                                        "example": "user"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/User"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Utilisateur inscrit",
+                        "description": "Utilisateur créé",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -109,8 +49,7 @@
                                             "$ref": "#/components/schemas/User"
                                         },
                                         "token": {
-                                            "type": "string",
-                                            "example": "eyJ0eXAiOiJKV1QiLC..."
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -119,7 +58,7 @@
                         }
                     },
                     "422": {
-                        "description": "Erreur de validation"
+                        "description": "Données invalides"
                     }
                 }
             }
@@ -127,9 +66,9 @@
         "/api/login": {
             "post": {
                 "tags": [
-                    "Authentification"
+                    "Auth"
                 ],
-                "summary": "Connexion de l'utilisateur",
+                "summary": "Connexion d'un utilisateur",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
                 "requestBody": {
                     "required": true,
@@ -143,7 +82,8 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "example": "jean@example.com"
+                                        "format": "email",
+                                        "example": "naruto@example.com"
                                     },
                                     "password": {
                                         "type": "string",
@@ -163,12 +103,13 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Connexion réussie"
                                         },
                                         "token": {
                                             "type": "string",
-                                            "example": "eyJhbGciOi..."
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
                                         }
                                     },
                                     "type": "object"
@@ -182,10 +123,39 @@
                 }
             }
         },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Récupérer les informations de l'utilisateur connecté",
+                "operationId": "7c1cf647d76fad4b3eb1549fa4fe2f4c",
+                "responses": {
+                    "200": {
+                        "description": "Informations de l'utilisateur récupérées avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non autorisé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/logout": {
             "post": {
                 "tags": [
-                    "Authentification"
+                    "Auth"
                 ],
                 "summary": "Déconnexion de l'utilisateur",
                 "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
@@ -205,37 +175,14 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Non autorisé"
                     }
                 },
                 "security": [
                     {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/api/user": {
-            "get": {
-                "tags": [
-                    "Authentification"
-                ],
-                "summary": "Infos de l'utilisateur connecté",
-                "operationId": "7c1cf647d76fad4b3eb1549fa4fe2f4c",
-                "responses": {
-                    "200": {
-                        "description": "Utilisateur connecté",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
+                        "BearerAuth": []
                     }
                 ]
             }
@@ -1718,7 +1665,13 @@
     "components": {
         "schemas": {
             "User": {
-                "title": "Utilisateur",
+                "required": [
+                    "name",
+                    "surname",
+                    "email",
+                    "password",
+                    "role"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -1726,16 +1679,31 @@
                     },
                     "name": {
                         "type": "string",
-                        "example": "Jean Dupont"
+                        "example": "Jean"
+                    },
+                    "surname": {
+                        "type": "string",
+                        "example": "Dupont"
                     },
                     "email": {
                         "type": "string",
+                        "format": "email",
                         "example": "jean@example.com"
                     },
-                    "email_verified_at": {
+                    "password": {
                         "type": "string",
-                        "format": "date-time",
-                        "nullable": true
+                        "format": "password",
+                        "example": "12345678"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "admin",
+                            "teacher",
+                            "student",
+                            "user"
+                        ],
+                        "example": "etudiant"
                     },
                     "created_at": {
                         "type": "string",
@@ -1744,10 +1712,6 @@
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
-                    },
-                    "role": {
-                        "type": "object",
-                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -1849,6 +1813,10 @@
         {
             "name": "Authentification",
             "description": "Authentification"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
         },
         {
             "name": "Chapitres",

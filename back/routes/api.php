@@ -20,6 +20,7 @@ use App\Http\Controllers\NewsController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/use', [AuthController::class, 'index']);
 
 // Route protégée
 Route::middleware('auth:api')->group(function () {

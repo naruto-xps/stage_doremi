@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         //
-         // Créer 10 utilisateurs factices
+          // Créer 10 utilisateurs factices
         for ($i = 1; $i <= 10; $i++) {
             User::create([
                 'name' => "User{$i}",

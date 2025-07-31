@@ -46,7 +46,7 @@ class User extends Authenticatable
     public function sentMessages() {
         return $this->hasMany(Message::class, 'sender_id');
     }
-   
+
     /**
      * The attributes that should be hidden for serialization.
      *

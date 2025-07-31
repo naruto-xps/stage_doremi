@@ -25,19 +25,25 @@ namespace App\Http\Controllers;
  *         url="https://opensource.org/licenses/MIT"
  *     )
  * )
- * 
- * @OA\Schema(
+ *
+* @OA\Schema(
  *     schema="User",
- *     title="Utilisateur",
+ *     type="object",
+ *     required={"name", "surname", "email", "password", "role"},
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Jean Dupont"),
- *     @OA\Property(property="email", type="string", example="jean@example.com"),
- *     @OA\Property(property="email_verified_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="name", type="string", example="Jean"),
+ *     @OA\Property(property="surname", type="string", example="Dupont"),
+ *     @OA\Property(property="email", type="string", format="email", example="jean@example.com"),
+ *     @OA\Property(property="password", type="string", format="password", example="12345678"),
+ *     @OA\Property(
+ *         property="role",
+ *         type="string",
+ *         enum={"admin", "teacher", "student","user"},
+ *         example="etudiant"
+ *     ),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time"),
- *     @OA\Property(property="role", type="object", nullable=true)
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
- * 
  *  @OA\Schema(
  *     schema="Progression",
  *     type="object",
@@ -70,7 +76,7 @@ namespace App\Http\Controllers;
  *     @OA\Property(property="created_at", type="string", format="date-time"),
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
- * 
+ *
  * @OA\Server(
  *     url="http://localhost:8000",
  *     description="Serveur local de développement"
