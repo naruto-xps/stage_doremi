@@ -24,6 +24,7 @@ class User extends Authenticatable
         'cv_path', 'identity_number'
     ];
 
+
     protected $casts = [
         'is_premium' => 'boolean',
         'premium_expires_at' => 'datetime',
@@ -48,7 +49,7 @@ class User extends Authenticatable
     public function sentMessages() {
         return $this->hasMany(Message::class, 'sender_id');
     }
-   
+
     /**
      * The attributes that should be hidden for serialization.
      *
