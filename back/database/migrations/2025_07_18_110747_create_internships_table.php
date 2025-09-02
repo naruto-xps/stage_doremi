@@ -18,6 +18,21 @@ return new class extends Migration
             $table->text('description');
             $table->string('location');
             $table->string('company');
+            $table->string('duration')->nullable();
+            $table->json('requirements')->nullable();
+            $table->date('application_deadline')->nullable();
+            $table->string('salary')->nullable();
+            $table->enum('type', ['stage', 'alternance', 'emploi'])->default('stage');
+            $table->boolean('remote')->default(false);
+            $table->boolean('is_premium')->default(false);
+            $table->integer('views')->default(0);
+            $table->integer('applications')->default(0);
+            $table->decimal('rating', 3, 2)->nullable();
+            $table->string('logo')->nullable();
+            $table->string('image')->nullable();
+            $table->json('tags')->nullable();
+            $table->foreignId('recruiter_id')->constrained('users');
+            $table->enum('status', ['active', 'expired', 'closed'])->default('active');
             $table->timestamps();
         });
     }

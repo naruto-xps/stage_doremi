@@ -48,6 +48,89 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'sender_id');
     }
 
+    // Relations pour les vidéos
+    public function videos()
+    {
+        return $this->hasMany(Video::class, 'instructor_id');
+    }
+
+    public function videoViews()
+    {
+        return $this->hasMany(VideoView::class);
+    }
+
+    public function videoLikes()
+    {
+        return $this->hasMany(VideoLike::class);
+    }
+
+    public function videoComments()
+    {
+        return $this->hasMany(VideoComment::class);
+    }
+
+    // Relations pour les documents de la bibliothèque
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'instructor_id');
+    }
+
+    public function documentDownloads()
+    {
+        return $this->hasMany(DocumentDownload::class);
+    }
+
+    public function documentViews()
+    {
+        return $this->hasMany(DocumentView::class);
+    }
+
+    public function documentRatings()
+    {
+        return $this->hasMany(DocumentRating::class);
+    }
+
+    // Relations pour les paiements et abonnements
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Obtenir l'abonnement actif de l'utilisateur
+     */
+    public function getActiveSubscription()
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>', now())
+            ->first();
+    }
+
+    /**
+     * Vérifier si l'utilisateur a un abonnement actif
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>', now())
+            ->exists();
+    }
+
+    /**
+     * Vérifier si l'utilisateur a un abonnement premium
+     */
+    public function isPremiumUser(): bool
+    {
+        return $this->is_premium && $this->hasActiveSubscription();
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

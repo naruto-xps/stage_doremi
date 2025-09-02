@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             NewsSeeder::class,
+            CourseSeeder::class,
+            VideoSeeder::class,
+            LibrarySeeder::class,
         ]);
     }
 }

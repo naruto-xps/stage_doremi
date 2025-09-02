@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class NewsController extends Controller
@@ -168,8 +170,8 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
-            'image' => 'nullable|url|max:500',
-            'featured_image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'author' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'read_time' => 'nullable|string|max:50',
@@ -186,7 +188,7 @@ class NewsController extends Controller
             'meta_description' => 'nullable|string|max:160',
             'meta_keywords' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'url|max:500',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'published_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after:published_at',
             'publish_schedule' => 'nullable|date|after:now'
@@ -200,6 +202,24 @@ class NewsController extends Controller
         $data['author_id'] = Auth::id();
         $data['status'] = $data['status'] ?? 'draft';
         $data['priority'] = $data['priority'] ?? 'medium';
+
+        // Traitement des images uploadées
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->uploadImage($request->file('image'), 'news');
+        }
+
+        if ($request->hasFile('featured_image')) {
+            $data['featured_image'] = $this->uploadImage($request->file('featured_image'), 'news/featured');
+        }
+
+        // Traitement de la galerie
+        if ($request->hasFile('gallery')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery') as $galleryImage) {
+                $galleryPaths[] = $this->uploadImage($galleryImage, 'news/gallery');
+            }
+            $data['gallery'] = $galleryPaths;
+        }
 
         $news = News::create($data);
 
@@ -239,8 +259,8 @@ class NewsController extends Controller
             'title' => 'sometimes|required|string|max:255',
             'content' => 'sometimes|required|string',
             'excerpt' => 'nullable|string|max:500',
-            'image' => 'nullable|url|max:500',
-            'featured_image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'author' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'read_time' => 'nullable|string|max:50',
@@ -257,7 +277,7 @@ class NewsController extends Controller
             'meta_description' => 'nullable|string|max:160',
             'meta_keywords' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'url|max:500',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'published_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after:published_at',
             'publish_schedule' => 'nullable|date|after:now'
@@ -267,7 +287,35 @@ class NewsController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $news->update($request->all());
+        $data = $request->all();
+
+        // Traitement des nouvelles images
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($news->image && !filter_var($news->image, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($news->image);
+            }
+            $data['image'] = $this->uploadImage($request->file('image'), 'news');
+        }
+
+        if ($request->hasFile('featured_image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($news->featured_image && !filter_var($news->featured_image, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($news->featured_image);
+            }
+            $data['featured_image'] = $this->uploadImage($request->file('featured_image'), 'news/featured');
+        }
+
+        // Traitement de la galerie
+        if ($request->hasFile('gallery')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery') as $galleryImage) {
+                $galleryPaths[] = $this->uploadImage($galleryImage, 'news/gallery');
+            }
+            $data['gallery'] = $galleryPaths;
+        }
+
+        $news->update($data);
 
         return response()->json($news);
     }
@@ -396,5 +444,20 @@ class NewsController extends Controller
         ];
 
         return response()->json($stats);
+    }
+
+    /**
+     * Upload d'image
+     */
+    private function uploadImage($file, $path)
+    {
+        try {
+            $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs($path, $fileName, 'public');
+            
+            return $filePath;
+        } catch (\Exception $e) {
+            throw new \Exception('Erreur lors de l\'upload de l\'image: ' . $e->getMessage());
+        }
     }
 }

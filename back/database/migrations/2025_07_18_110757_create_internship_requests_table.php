@@ -17,7 +17,23 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('internship_id')->constrained('internships')->onDelete('cascade');
             $table->text('motivation');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            
+            // Informations utilisateur supplémentaires
+            $table->string('user_name')->nullable();
+            $table->string('user_email')->nullable();
+            $table->enum('user_role', ['student', 'teacher'])->nullable();
+            $table->string('user_phone')->nullable();
+            
+            // Fichiers et documents
+            $table->text('cv_file_data')->nullable(); // Base64 du CV
+            $table->string('cv_file_name')->nullable();
+            $table->integer('cv_file_size')->nullable();
+            $table->text('cover_letter')->nullable(); // Lettre de motivation (différent de motivation)
+            
+            // Gestion administrative
+            $table->enum('status', ['pending', 'reviewed', 'accepted', 'rejected'])->default('pending');
+            $table->text('admin_notes')->nullable();
+            
             $table->timestamps();
         });
     }
