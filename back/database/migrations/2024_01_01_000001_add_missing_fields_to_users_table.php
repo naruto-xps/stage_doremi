@@ -17,8 +17,8 @@ return new class extends Migration
             $table->boolean('is_verified')->default(false);
             $table->string('phone')->nullable();
             
-            // Modifier l'enum role pour inclure recruiter
-            $table->enum('role', ['admin', 'teacher', 'student', 'recruiter', 'user'])->default('user')->change();
+            // Note: La modification de l'enum role sera gérée par une migration séparée
+            // pour éviter les problèmes de compatibilité PostgreSQL
         });
     }
 
@@ -29,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['student_cycle', 'is_verified', 'phone']);
-            $table->enum('role', ['admin', 'teacher', 'student', 'user'])->default('user')->change();
         });
     }
 };
