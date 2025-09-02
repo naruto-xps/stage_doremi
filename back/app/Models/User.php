@@ -22,7 +22,7 @@ class User extends Authenticatable
       protected $fillable = [
         'name', 'surname', 'email', 'password', 'role', 'is_premium', 'premium_expires_at',
         'profile_photo', 'bio', 'level', 'school', 'skills', 'experience', 'linkedin',
-        'cv_path', 'identity_number'
+        'cv_path', 'identity_number', 'student_cycle', 'is_verified', 'phone'
     ];
 
     protected $casts = [
@@ -30,6 +30,7 @@ class User extends Authenticatable
         'premium_expires_at' => 'datetime',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_verified' => 'boolean',
     ];
      public function courses() {
         return $this->hasMany(Course::class, 'teacher_id');
