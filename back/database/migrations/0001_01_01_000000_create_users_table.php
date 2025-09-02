@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
            // 🎯 Enum directement dans la colonne
-           $table->enum('role', ['admin', 'teacher', 'student','user'])->default('user');
+           $table->enum('role', ['admin', 'teacher', 'student','user','recruiter'])->default('user');
 
             $table->boolean('is_premium')->default(false);
             $table->datetime('premium_expires_at')->nullable();
