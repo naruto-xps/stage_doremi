@@ -43,6 +43,7 @@ class CourseController extends Controller
     {
         $query = Course::query();
 
+        // Filtres existants
         if ($request->has('theme')) {
             $query->where('theme', $request->theme);
         }
@@ -55,7 +56,44 @@ class CourseController extends Controller
             $query->where('school', $request->school);
         }
 
-        $courses = $query->get();
+        // Nouveaux filtres
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->has('difficulty_level')) {
+            $query->where('difficulty_level', $request->difficulty_level);
+        }
+
+        if ($request->has('education_level')) {
+            $query->where('education_level', $request->education_level);
+        }
+
+        if ($request->has('is_premium')) {
+            $query->where('is_premium', $request->boolean('is_premium'));
+        }
+
+        if ($request->has('price_min')) {
+            $query->where('price', '>=', $request->price_min);
+        }
+
+        if ($request->has('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        if ($request->has('rating_min')) {
+            $query->where('rating', '>=', $request->rating_min);
+        }
+
+        // Tri
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        
+        if (in_array($sortBy, ['title', 'rating', 'students_count', 'chapters_count', 'price', 'created_at'])) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $courses = $query->with('teacher')->get();
 
         return response()->json($courses);
     }
@@ -111,7 +149,35 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $course = Course::create($request->all());
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'thumbnail' => 'nullable|string|url',
+            'duration' => 'nullable|string|max:100',
+            'chapters_count' => 'nullable|integer|min:0',
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'students_count' => 'nullable|integer|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'theme' => 'required|string|max:255',
+            'level' => 'required|string|max:255',
+            'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
+            'category' => 'nullable|string|max:255',
+            'education_level' => 'nullable|string|in:ecolier,collegien,lyceen,etudiant',
+            'is_premium' => 'boolean',
+            'school' => 'nullable|string|max:255',
+        ]);
+
+        // Ajouter automatiquement le teacher_id de l'utilisateur connecté
+        $validated['teacher_id'] = $request->user()->id;
+        
+        // Valeurs par défaut
+        $validated['chapters_count'] = $validated['chapters_count'] ?? 0;
+        $validated['rating'] = $validated['rating'] ?? 0.00;
+        $validated['students_count'] = $validated['students_count'] ?? 0;
+        $validated['difficulty_level'] = $validated['difficulty_level'] ?? 'beginner';
+        $validated['is_premium'] = $validated['is_premium'] ?? false;
+
+        $course = Course::create($validated);
         return response()->json($course, 201);
     }
 
@@ -145,7 +211,31 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->update($request->all());
+        
+        // Vérifier que l'utilisateur est le propriétaire du cours
+        if ($course->teacher_id !== $request->user()->id) {
+            return response()->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'thumbnail' => 'nullable|string|url',
+            'duration' => 'nullable|string|max:100',
+            'chapters_count' => 'nullable|integer|min:0',
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'students_count' => 'nullable|integer|min:0',
+            'price' => 'nullable|numeric|min:0',
+            'theme' => 'sometimes|string|max:255',
+            'level' => 'sometimes|string|max:255',
+            'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
+            'category' => 'nullable|string|max:255',
+            'education_level' => 'nullable|string|in:ecolier,collegien,lyceen,etudiant',
+            'is_premium' => 'boolean',
+            'school' => 'nullable|string|max:255',
+        ]);
+
+        $course->update($validated);
         return response()->json($course);
     }
 

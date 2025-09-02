@@ -10,7 +10,30 @@ class Course extends Model
     //
     use HasFactory;
     protected $fillable = [
-        'title', 'description', 'theme', 'level', 'is_premium', 'teacher_id', 'school'
+        'title', 
+        'description', 
+        'thumbnail',
+        'duration',
+        'chapters_count',
+        'rating',
+        'students_count',
+        'price',
+        'theme', 
+        'level', 
+        'difficulty_level',
+        'category',
+        'education_level',
+        'is_premium', 
+        'teacher_id', 
+        'school'
+    ];
+
+    protected $casts = [
+        'is_premium' => 'boolean',
+        'rating' => 'decimal:2',
+        'price' => 'decimal:2',
+        'chapters_count' => 'integer',
+        'students_count' => 'integer',
     ];
 
     public function teacher() {

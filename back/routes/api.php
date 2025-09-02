@@ -59,10 +59,22 @@ Route::middleware('auth:api')->group(function () {
 
 Route::get('/news/{id}', [NewsController::class, 'show']); // Afficher une actualité spécifique
 Route::get('/news', [NewsController::class, 'index']); // Afficher les actualités
+Route::get('/news/stats', [NewsController::class, 'stats']); // Statistiques des actualités
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/news', [NewsController::class, 'store']);//->middleware('role:admin'); // Créer une actualité (admin)
     Route::put('/news/{id}', [NewsController::class, 'update'])->middleware('role:admin'); // Modifier une actualité (admin)
     Route::delete('/news/{id}', [NewsController::class, 'destroy'])->middleware('role:admin'); // Supprimer une actualité (admin)
+    
+    // Actions spéciales (admin uniquement)
+    Route::patch('/news/{id}/toggle-featured', [NewsController::class, 'toggleFeatured'])->middleware('role:admin'); // Basculer vedette
+    Route::patch('/news/{id}/toggle-urgent', [NewsController::class, 'toggleUrgent'])->middleware('role:admin'); // Basculer urgent
+    Route::patch('/news/{id}/publish', [NewsController::class, 'publish'])->middleware('role:admin'); // Publier
+    Route::patch('/news/{id}/archive', [NewsController::class, 'archive'])->middleware('role:admin'); // Archiver
+    
+    // Actions d'engagement (utilisateurs connectés)
+    Route::post('/news/{id}/like', [NewsController::class, 'incrementLikes']); // Ajouter un like
+    Route::post('/news/{id}/share', [NewsController::class, 'incrementShares']); // Compter un partage
 });
 
 
