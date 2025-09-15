@@ -38,23 +38,43 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
+            'surname' => 'nullable|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'in:admin,teacher,student,recruiter'
+            'role' => 'required|in:admin,teacher,student,recruiter',
+            'student_cycle' => 'nullable|in:lyceen,licence,master,doctorat',
+            'cv' => 'nullable|file|mimes:pdf|max:5120' // 5MB max
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $user = User::create([
+        $userData = [
             'name' => $request->name,
-            'surname' => $request->surname,
+            'surname' => $request->surname ?? $request->name, // Utiliser name comme surname si non fourni
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'user', // ✅ Valeur par défaut si absente
-        ]);
+            'role' => $request->role,
+            'is_verified' => false,
+        ];
+
+        // Ajouter student_cycle si fourni
+        if ($request->has('student_cycle')) {
+            $userData['student_cycle'] = $request->student_cycle;
+        }
+
+        // Gérer l'upload du CV si fourni
+        if ($request->hasFile('cv')) {
+            $cvFile = $request->file('cv');
+            $cvPath = $cvFile->store('cvs', 'public');
+            $userData['cv_path'] = $cvPath;
+        }
+
+        $user = User::create($userData);
 
         $token = $user->createToken('LaravelPassportToken')->accessToken;
 
@@ -90,10 +110,25 @@ class AuthController extends Controller
     // 🔐 Connexion
     public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'message' => 'Invalid credentials',
+                'error' => 'Unauthorized'
+            ], 401);
         }
 
         $user = Auth::user();

@@ -418,6 +418,17 @@ class NewsController extends Controller
         ]);
     }
 
+    public function incrementComments($id): JsonResponse
+    {
+        $news = News::findOrFail($id);
+        $news->incrementComments();
+
+        return response()->json([
+            'message' => 'Commentaire ajouté',
+            'comments_count' => $news->comments_count
+        ]);
+    }
+
     /**
      * Statistiques
      */
