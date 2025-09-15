@@ -29,7 +29,6 @@ use App\Http\Controllers\FileController;
 // ========================================
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/use', [AuthController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
@@ -50,8 +49,18 @@ Route::get('/courses', [CourseController::class, 'index']);
 
 // Actualités - Consultation publique
 Route::get('/news', [NewsController::class, 'index']);
-Route::get('/news/{id}', [NewsController::class, 'show']);
 Route::get('/news/stats', [NewsController::class, 'stats']);
+Route::get('/news/{id}', [NewsController::class, 'show']);
+
+// Actions d'engagement (publiques - pas besoin d'authentification)
+Route::post('/news/{id}/like', [NewsController::class, 'incrementLikes']);
+Route::post('/news/{id}/share', [NewsController::class, 'incrementShares']);
+Route::post('/news/{id}/comment', [NewsController::class, 'incrementComments']);
+
+// Commentaires (publiques)
+Route::get('/news/{id}/comments', [App\Http\Controllers\CommentController::class, 'index']);
+Route::post('/news/{id}/comments', [App\Http\Controllers\CommentController::class, 'store']);
+Route::post('/comments/{id}/like', [App\Http\Controllers\CommentController::class, 'like']);
 
 // Vidéos - Consultation publique
 Route::get('/videos', [VideoController::class, 'index']);
@@ -136,19 +145,16 @@ Route::middleware('auth:api')->group(function () {
     // ========================================
     // GESTION DES ACTUALITÉS (Admin)
     // ========================================
-    Route::post('/news', [NewsController::class, 'store'])->middleware('role:admin');
-    Route::put('/news/{id}', [NewsController::class, 'update'])->middleware('role:admin');
-    Route::delete('/news/{id}', [NewsController::class, 'destroy'])->middleware('role:admin');
+    Route::post('/news', [NewsController::class, 'store']);
+    Route::put('/news/{id}', [NewsController::class, 'update']);
+    Route::delete('/news/{id}', [NewsController::class, 'destroy']);
     
     // Actions spéciales (admin uniquement)
-    Route::patch('/news/{id}/toggle-featured', [NewsController::class, 'toggleFeatured'])->middleware('role:admin');
-    Route::patch('/news/{id}/toggle-urgent', [NewsController::class, 'toggleUrgent'])->middleware('role:admin');
-    Route::patch('/news/{id}/publish', [NewsController::class, 'publish'])->middleware('role:admin');
-    Route::patch('/news/{id}/archive', [NewsController::class, 'archive'])->middleware('role:admin');
+    Route::patch('/news/{id}/toggle-featured', [NewsController::class, 'toggleFeatured']);
+    Route::patch('/news/{id}/toggle-urgent', [NewsController::class, 'toggleUrgent']);
+    Route::patch('/news/{id}/publish', [NewsController::class, 'publish']);
+    Route::patch('/news/{id}/archive', [NewsController::class, 'archive']);
     
-    // Actions d'engagement (utilisateurs connectés)
-    Route::post('/news/{id}/like', [NewsController::class, 'incrementLikes']);
-    Route::post('/news/{id}/share', [NewsController::class, 'incrementShares']);
 
     // ========================================
     // GESTION DES VIDÉOS (Formateurs)

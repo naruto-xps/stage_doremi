@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('linkedin')->nullable();
             $table->string('cv_path')->nullable();
             $table->string('identity_number')->nullable();
+            $table->enum('student_cycle', ['lyceen', 'licence', 'master', 'doctorat'])->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->string('phone')->nullable();
             $table->timestamps();
         });
 

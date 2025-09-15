@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 
 class News extends Model
@@ -31,6 +32,11 @@ class News extends Model
         'published_at' => 'datetime',
         'expires_at' => 'datetime',
         'publish_schedule' => 'datetime'
+    ];
+
+    protected $appends = [
+        'image_url',
+        'featured_image_url'
     ];
 
     protected $dates = [
@@ -123,6 +129,36 @@ class News extends Model
         return number_format($this->shares_count);
     }
 
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        // Si c'est déjà une URL complète, la retourner telle quelle
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
+        // Construire l'URL complète avec le stockage public
+        return asset('storage/' . $this->image);
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+
+        // Si c'est déjà une URL complète, la retourner telle quelle
+        if (filter_var($this->featured_image, FILTER_VALIDATE_URL)) {
+            return $this->featured_image;
+        }
+
+        // Construire l'URL complète avec le stockage public
+        return asset('storage/' . $this->featured_image);
+    }
+
     public function getPriorityColorAttribute(): string
     {
         return match($this->priority) {
@@ -178,6 +214,14 @@ class News extends Model
     public function incrementShares(): void
     {
         $this->increment('shares_count');
+    }
+
+    /**
+     * Relation avec les commentaires
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->approved()->orderBy('created_at', 'desc');
     }
 
     public function isExpired(): bool
