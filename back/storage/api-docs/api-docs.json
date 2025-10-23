@@ -21,6 +21,171 @@
         }
     ],
     "paths": {
+        "/api/analytics/courses": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Obtenir les statistiques des cours",
+                "operationId": "25bb1da482237738530326f7bf1e44a4",
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Période (7d, 30d, 90d, 1y)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "30d"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques des cours récupérées avec succès"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/analytics/users": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Obtenir les statistiques des utilisateurs",
+                "operationId": "310c86edc71e7560a815600ca8f7deb0",
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Période (7d, 30d, 90d, 1y)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "30d"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques des utilisateurs récupérées avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/analytics/revenue": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Obtenir les statistiques de revenus",
+                "operationId": "3b6aaa16d6dd6a617f5b36510b42f0bc",
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Période (7d, 30d, 90d, 1y)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "30d"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques de revenus récupérées avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/analytics/content": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Obtenir les statistiques du contenu",
+                "operationId": "1dcb85eff5b365858e056b25043796b4",
+                "responses": {
+                    "200": {
+                        "description": "Statistiques du contenu récupérées avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/reports/generate": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Générer un rapport personnalisé",
+                "operationId": "47ef8bede54dcaab9875aa3dc6e24215",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type de rapport (courses, users, revenue, content)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Période (7d, 30d, 90d, 1y)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "30d"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Format du rapport (json, csv)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rapport généré avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -178,6 +343,215 @@
                     },
                     "401": {
                         "description": "Non autorisé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates/{userId}": {
+            "get": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Obtenir les certificats d'un utilisateur",
+                "operationId": "0f8edcf2486518036859e7ca95eb8a3f",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificats récupérés avec succès"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates": {
+            "post": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Créer un certificat pour un utilisateur",
+                "operationId": "4e782d44d2eb7763463a7a56e77545a0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "course_id": {
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "type": "integer"
+                                    },
+                                    "completion_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "valid_until": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Certificat créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates/{id}": {
+            "get": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Obtenir un certificat spécifique",
+                "operationId": "191e2a30f6ace09ac91b4b07289cfa86",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du certificat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificat récupéré avec succès"
+                    },
+                    "404": {
+                        "description": "Certificat non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Supprimer un certificat",
+                "operationId": "733beb8b840fc22a4506f6a8d59784c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du certificat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificat supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Certificat non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates/validate/{certificateId}": {
+            "get": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Valider un certificat",
+                "operationId": "50eeaa210c9f2b7f09a7091af9380dcd",
+                "parameters": [
+                    {
+                        "name": "certificateId",
+                        "in": "path",
+                        "description": "ID du certificat à valider",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificat validé avec succès"
+                    },
+                    "404": {
+                        "description": "Certificat non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/certificates/stats/{userId}": {
+            "get": {
+                "tags": [
+                    "Certificats"
+                ],
+                "summary": "Obtenir les statistiques des certificats d'un utilisateur",
+                "operationId": "cc56998d738b24cd1f07e0899ecb0b75",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques récupérées avec succès"
                     }
                 },
                 "security": [
@@ -668,6 +1042,162 @@
                 }
             }
         },
+        "/api/dashboard/stats/{userId}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Obtenir les statistiques du tableau de bord pour un utilisateur",
+                "operationId": "ddaf86720488df4fe0e665027a7785b3",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques récupérées avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "totalCourses": {
+                                            "type": "integer"
+                                        },
+                                        "completedCourses": {
+                                            "type": "integer"
+                                        },
+                                        "inProgressCourses": {
+                                            "type": "integer"
+                                        },
+                                        "totalHours": {
+                                            "type": "integer"
+                                        },
+                                        "certificates": {
+                                            "type": "integer"
+                                        },
+                                        "unreadMessages": {
+                                            "type": "integer"
+                                        },
+                                        "recentActivity": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/recommendations/{userId}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Obtenir les cours recommandés pour un utilisateur",
+                "operationId": "d40009c39c10030ef176ce6de65205c9",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recommandations récupérées avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/recent-activity/{userId}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Obtenir l'activité récente d'un utilisateur",
+                "operationId": "4278fae60aab9faeefac9b7da7052dfa",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activité récente récupérée avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/progress/{userId}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Obtenir la progression globale d'un utilisateur",
+                "operationId": "bdc3dba6331e2bb0e5fb808b3c98cf3b",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progression récupérée avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/documents": {
             "get": {
                 "tags": [
@@ -774,6 +1304,333 @@
                         "description": "Document non trouvé"
                     }
                 }
+            }
+        },
+        "/api/files/upload": {
+            "post": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Upload de fichiers",
+                "operationId": "1a8c6bbccb7eb6d61eff2d4c1d6b1932",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Fichier uploadé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/files/{id}": {
+            "get": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Télécharger un fichier",
+                "operationId": "61573953e84cdf45b905740d35abd182",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du fichier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fichier téléchargé avec succès"
+                    },
+                    "404": {
+                        "description": "Fichier non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Mettre à jour les informations d'un fichier",
+                "operationId": "34ddaf5aa4382c2dcd25f27282fe7aea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du fichier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Fichier mis à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Fichier non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Supprimer un fichier",
+                "operationId": "ed5fdf4b3ec3aba79c7bc0ce913fbcd5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du fichier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fichier supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Fichier non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/files/user/{userId}": {
+            "get": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Obtenir les fichiers d'un utilisateur",
+                "operationId": "8af7a83003e9da0f933eef7f975b87b8",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filtrer par catégorie",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Rechercher dans les noms de fichiers",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fichiers récupérés avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/files/{id}/info": {
+            "get": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Obtenir les informations d'un fichier",
+                "operationId": "da14dee3d4850b9d7914cf947a6d80ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du fichier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informations du fichier récupérées avec succès"
+                    },
+                    "404": {
+                        "description": "Fichier non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/files/categories": {
+            "get": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Obtenir les catégories de fichiers",
+                "operationId": "79b5bf12255c0748f13855e0506d59e6",
+                "responses": {
+                    "200": {
+                        "description": "Catégories récupérées avec succès"
+                    }
+                }
+            }
+        },
+        "/api/files/{id}/share": {
+            "post": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Partager un fichier (générer un lien temporaire)",
+                "operationId": "6373b1fc9b27f61122f69a2676b31b79",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du fichier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Lien de partage généré avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/files/stats/{userId}": {
+            "get": {
+                "tags": [
+                    "Fichiers"
+                ],
+                "summary": "Obtenir les statistiques des fichiers d'un utilisateur",
+                "operationId": "7f8558f9e250ea2ab2d53d0ab03818e6",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques récupérées avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
             }
         },
         "/api/internships": {
@@ -1321,6 +2178,654 @@
                 }
             }
         },
+        "/api/notifications/{userId}": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Obtenir les notifications d'un utilisateur",
+                "operationId": "6d54b3b23736edafddaca891048d9d97",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Numéro de page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Nombre d'éléments par page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notifications récupérées avec succès"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Créer une nouvelle notification",
+                "operationId": "91f8e779a9e46cb5cdda969e5a928a94",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "info",
+                                            "success",
+                                            "warning",
+                                            "error",
+                                            "course",
+                                            "message",
+                                            "system"
+                                        ]
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "low",
+                                            "medium",
+                                            "high",
+                                            "urgent"
+                                        ]
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "course",
+                                            "message",
+                                            "system",
+                                            "promotion",
+                                            "reminder"
+                                        ]
+                                    },
+                                    "action_url": {
+                                        "type": "string"
+                                    },
+                                    "action_text": {
+                                        "type": "string"
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Notification créée avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/read": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marquer une notification comme lue",
+                "operationId": "14ca05f271f4c57f1f368b868ab34446",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la notification",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification marquée comme lue"
+                    },
+                    "404": {
+                        "description": "Notification non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/archive": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Archiver une notification",
+                "operationId": "f8aa53ad1db5f288ba3e208646391ffb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la notification",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification archivée"
+                    },
+                    "404": {
+                        "description": "Notification non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}": {
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Supprimer une notification",
+                "operationId": "54c4eb5ec5dc0d1e2916cec2fced1056",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la notification",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification supprimée"
+                    },
+                    "404": {
+                        "description": "Notification non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/unread-count/{userId}": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Obtenir le nombre de notifications non lues d'un utilisateur",
+                "operationId": "dcf90b8dfcff20a1fd5bf7cbb4116de5",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Nombre de notifications non lues"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/mark-all-read/{userId}": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marquer toutes les notifications d'un utilisateur comme lues",
+                "operationId": "bf412b46a23a5d4a73d43c0be9ad4b0d",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Toutes les notifications marquées comme lues"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{userId}": {
+            "get": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Obtenir les abonnements d'un utilisateur",
+                "operationId": "8a65e9bfdd68a8c8d189d5a2b0d4cdd3",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Abonnements récupérés avec succès"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions": {
+            "post": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Créer un nouvel abonnement",
+                "operationId": "55785339e6eafa3b4c917ada608130de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "plan_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "basic",
+                                            "premium",
+                                            "enterprise"
+                                        ]
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "default": "EUR"
+                                    },
+                                    "duration_months": {
+                                        "type": "integer"
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    },
+                                    "auto_renew": {
+                                        "type": "boolean",
+                                        "default": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Abonnement créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{id}": {
+            "put": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Mettre à jour un abonnement",
+                "operationId": "177bb0f71099e1b87a2e5d8f15546129",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'abonnement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "plan_type": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "auto_renew": {
+                                        "type": "boolean"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Abonnement mis à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Abonnement non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Supprimer un abonnement",
+                "operationId": "1c3de098cff6f883a313b910c1f9d621",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'abonnement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Abonnement supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Abonnement non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/payments": {
+            "post": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Traiter un paiement",
+                "operationId": "6ed7838e6c677c90f52dd3ba24f13269",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "subscription_id": {
+                                        "type": "integer"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    },
+                                    "transaction_id": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "completed",
+                                            "failed",
+                                            "refunded"
+                                        ]
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Paiement traité avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/payments/history/{userId}": {
+            "get": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Obtenir l'historique des paiements d'un utilisateur",
+                "operationId": "2cc267f05dc8d276bf7bbf10cf11effc",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Numéro de page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Historique des paiements récupéré avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Annuler un abonnement",
+                "operationId": "bf05987435802006ee25933d296d3709",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'abonnement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Abonnement annulé avec succès"
+                    },
+                    "404": {
+                        "description": "Abonnement non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{id}/renew": {
+            "post": {
+                "tags": [
+                    "Paiements"
+                ],
+                "summary": "Renouveler un abonnement",
+                "operationId": "f6163957a3ca3bdd0fb0331c9c32aee7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'abonnement",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Abonnement renouvelé avec succès"
+                    },
+                    "404": {
+                        "description": "Abonnement non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/{userId}/courses/{courseId}/progression": {
             "get": {
                 "tags": [
@@ -1660,6 +3165,1122 @@
                     }
                 }
             }
+        },
+        "/api/search": {
+            "get": {
+                "tags": [
+                    "Recherche"
+                ],
+                "summary": "Recherche globale sur toutes les ressources",
+                "operationId": "b40b0ddf237f237094f0a5f59191bd28",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Terme de recherche",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type de ressource (courses, documents, internships, news, videos)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Nombre de résultats par type",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche"
+                    }
+                }
+            }
+        },
+        "/api/search/courses": {
+            "get": {
+                "tags": [
+                    "Recherche"
+                ],
+                "summary": "Recherche avancée de cours",
+                "operationId": "67c7be377c4175422463e2646adcc1db",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Terme de recherche",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Catégorie de cours",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Niveau de difficulté",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "beginner",
+                                "intermediate",
+                                "advanced"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "education_level",
+                        "in": "query",
+                        "description": "Niveau d'éducation",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "instructor",
+                        "in": "query",
+                        "description": "Nom de l'instructeur",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "is_premium",
+                        "in": "query",
+                        "description": "Cours premium uniquement",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "min_rating",
+                        "in": "query",
+                        "description": "Note minimale",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "maximum": 5,
+                            "minimum": 0
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Tri (rating, students_count, created_at, title)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "rating"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Ordre (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Numéro de page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche de cours"
+                    }
+                }
+            }
+        },
+        "/api/search/documents": {
+            "get": {
+                "tags": [
+                    "Recherche"
+                ],
+                "summary": "Recherche avancée de documents",
+                "operationId": "ac5cfa792f86211883d9df59a9c2a9b1",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Terme de recherche",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type de document",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pdf",
+                                "doc",
+                                "ppt",
+                                "video",
+                                "audio",
+                                "book"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Catégorie",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "Auteur",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "is_premium",
+                        "in": "query",
+                        "description": "Documents premium uniquement",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "min_rating",
+                        "in": "query",
+                        "description": "Note minimale",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "maximum": 5,
+                            "minimum": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche de documents"
+                    }
+                }
+            }
+        },
+        "/api/search/internships": {
+            "get": {
+                "tags": [
+                    "Recherche"
+                ],
+                "summary": "Recherche avancée de stages",
+                "operationId": "961d1f2a505e850475916d1666318f16",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Terme de recherche",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "description": "Localisation",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type de stage",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "stage",
+                                "alternance",
+                                "emploi"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "remote",
+                        "in": "query",
+                        "description": "Télétravail possible",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "is_premium",
+                        "in": "query",
+                        "description": "Offres premium uniquement",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche de stages"
+                    }
+                }
+            }
+        },
+        "/api/search/suggestions": {
+            "get": {
+                "tags": [
+                    "Recherche"
+                ],
+                "summary": "Obtenir des suggestions de recherche",
+                "operationId": "2cc815c919bfcb65c1f07cdf4256d7a2",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Terme de recherche partiel",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Suggestions de recherche"
+                    }
+                }
+            }
+        },
+        "/api/support/tickets/{userId}": {
+            "get": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Obtenir les tickets de support d'un utilisateur",
+                "operationId": "b81d73ede9868439ce82bbe369511c46",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filtrer par statut",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "in_progress",
+                                "resolved",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "description": "Filtrer par priorité",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "low",
+                                "medium",
+                                "high",
+                                "urgent"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tickets de support récupérés avec succès"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/support/tickets": {
+            "post": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Créer un nouveau ticket de support",
+                "operationId": "455f413d21a26ea23e9089fe5e69a658",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "technical",
+                                            "billing",
+                                            "course",
+                                            "general"
+                                        ]
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "low",
+                                            "medium",
+                                            "high",
+                                            "urgent"
+                                        ]
+                                    },
+                                    "attachments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket de support créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/support/tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Obtenir un ticket de support spécifique",
+                "operationId": "a52cbb6124fa23d998763fcfdf4f7e8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du ticket",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket de support récupéré avec succès"
+                    },
+                    "404": {
+                        "description": "Ticket non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Mettre à jour un ticket de support",
+                "operationId": "0c9bea26416fa77dd831674627407da4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du ticket",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "type": "string"
+                                    },
+                                    "assigned_to": {
+                                        "type": "integer"
+                                    },
+                                    "admin_notes": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket de support mis à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Ticket non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Supprimer un ticket de support",
+                "operationId": "2e70fb8d0e14e10ad52104eeaaf673bb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du ticket",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket de support supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Ticket non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/support/faq": {
+            "get": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Obtenir la FAQ",
+                "operationId": "77e8c3c33a012673d5149b0c621fbeff",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filtrer par catégorie",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Rechercher dans la FAQ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "FAQ récupérée avec succès"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Créer une nouvelle entrée FAQ",
+                "operationId": "d4d599bdbfeebfbc0887140711d2cd60",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string"
+                                    },
+                                    "answer": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "order": {
+                                        "type": "integer"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "FAQ créée avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/support/faq/{id}": {
+            "put": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Mettre à jour une entrée FAQ",
+                "operationId": "f40896372cdfa42f7fcb514660cb294f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la FAQ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string"
+                                    },
+                                    "answer": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "order": {
+                                        "type": "integer"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "FAQ mise à jour avec succès"
+                    },
+                    "404": {
+                        "description": "FAQ non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Supprimer une entrée FAQ",
+                "operationId": "5a4f0bf4871b9a8853020ebf753bd0b2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la FAQ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "FAQ supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "FAQ non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/support/categories": {
+            "get": {
+                "tags": [
+                    "Support"
+                ],
+                "summary": "Obtenir les catégories de support",
+                "operationId": "c4d03e146b2e34e0cb0026e02cb34427",
+                "responses": {
+                    "200": {
+                        "description": "Catégories récupérées avec succès"
+                    }
+                }
+            }
+        },
+        "/api/test/payment-system": {
+            "get": {
+                "tags": [
+                    "Test Paiements"
+                ],
+                "summary": "Tester le système de paiement complet",
+                "operationId": "e4f90db8f93160f02ecb958f8024082e",
+                "responses": {
+                    "200": {
+                        "description": "Test réussi"
+                    }
+                }
+            }
+        },
+        "/api/test/payment-relations": {
+            "get": {
+                "tags": [
+                    "Test Paiements"
+                ],
+                "summary": "Tester les relations entre les modèles",
+                "operationId": "198767c773e380299ca0848a6a0bca22",
+                "responses": {
+                    "200": {
+                        "description": "Relations testées avec succès"
+                    }
+                }
+            }
+        },
+        "/api/videos": {
+            "get": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Lister toutes les vidéos",
+                "operationId": "af0d3163c12f615e3e97f9dc9472b3df",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filtrer par catégorie",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "difficulty",
+                        "in": "query",
+                        "description": "Filtrer par niveau de difficulté",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "instructor",
+                        "in": "query",
+                        "description": "Filtrer par instructeur",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des vidéos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Créer une nouvelle vidéo",
+                "operationId": "224b0b473253bfa82a148d8c3a860374",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "file_url"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "file_url": {
+                                        "type": "string"
+                                    },
+                                    "file_name": {
+                                        "type": "string"
+                                    },
+                                    "file_size": {
+                                        "type": "integer"
+                                    },
+                                    "duration": {
+                                        "type": "integer"
+                                    },
+                                    "thumbnail": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "difficulty_level": {
+                                        "type": "string"
+                                    },
+                                    "is_premium": {
+                                        "type": "boolean"
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vidéo créée avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/videos/{id}": {
+            "get": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Afficher une vidéo spécifique",
+                "operationId": "4f3140b090445a904b4598c1004542bb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la vidéo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la vidéo"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Mettre à jour une vidéo",
+                "operationId": "9455586d7f731480a115f7d81a9cfcee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la vidéo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vidéo mise à jour avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Supprimer une vidéo",
+                "operationId": "ed3847155f59fa5133a57779d84b099a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la vidéo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vidéo supprimée avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/videos/{id}/like": {
+            "post": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Liker/disliker une vidéo",
+                "operationId": "b9707e3c31c7dbe7f8f4c297fd01cc80",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la vidéo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "like",
+                                            "dislike"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Like/dislike ajouté avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/videos/{id}/comments": {
+            "post": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Ajouter un commentaire à une vidéo",
+                "operationId": "293a78951a4c6c55b116c897a146baee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la vidéo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "parent_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Commentaire ajouté avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/instructors/{instructorId}/videos": {
+            "get": {
+                "tags": [
+                    "Vidéos"
+                ],
+                "summary": "Lister les vidéos d'un instructeur",
+                "operationId": "03e3df6c8bd4ae01627538dafda41cdb",
+                "parameters": [
+                    {
+                        "name": "instructorId",
+                        "in": "path",
+                        "description": "ID de l'instructeur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des vidéos de l'instructeur"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1811,6 +4432,42 @@
     },
     "tags": [
         {
+            "name": "Analytics",
+            "description": "API pour les analytics et rapports"
+        },
+        {
+            "name": "Certificats",
+            "description": "API pour la gestion des certificats et récompenses"
+        },
+        {
+            "name": "Dashboard",
+            "description": "API pour le tableau de bord et les statistiques"
+        },
+        {
+            "name": "Fichiers",
+            "description": "API pour la gestion des fichiers"
+        },
+        {
+            "name": "Notifications",
+            "description": "API pour la gestion des notifications"
+        },
+        {
+            "name": "Paiements",
+            "description": "API pour la gestion des paiements et abonnements"
+        },
+        {
+            "name": "Recherche",
+            "description": "API pour la recherche globale et avancée"
+        },
+        {
+            "name": "Support",
+            "description": "API pour le support et l'aide utilisateur"
+        },
+        {
+            "name": "Test Paiements",
+            "description": "API de test pour le système de paiement"
+        },
+        {
             "name": "Authentification",
             "description": "Authentification"
         },
@@ -1857,6 +4514,10 @@
         {
             "name": "Écoles",
             "description": "Écoles"
+        },
+        {
+            "name": "Vidéos",
+            "description": "Vidéos"
         }
     ]
 }
